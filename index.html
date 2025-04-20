@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confess Anonymously 💌</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #f0e7ff, #fff1f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #confessBox {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 30px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    h1 {
+      color: #ff66b2;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #f0e7ff;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      background-color: #fff;
+      border: 1px solid #ff66b2;
+    }
+
+    button {
+      background-color: #ff66b2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #ff3385;
+      transform: scale(1.05);
+    }
+
+    p {
+      font-size: 12px;
+      color: #888;
+      margin-top: 15px;
+    }
+
+    a {
+      color: #ff66b2;
+      text-decoration: none;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="confessBox">
+    <h1>Confess Anonymously 💌</h1>
+    <input type="text" id="name" placeholder="Your name (Optional)" />
+    <textarea id="confession" placeholder="Your confession..." rows="5"></textarea>
+    <button id="submitBtn">Submit Confession</button>
+    <p>Want to see confessions? <a href="viewConfessions.html">Click here!</a></p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID",
+      measurementId: "YOUR_MEASUREMENT_ID"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const confessionInput = document.getElementById('confession');
+    const nameInput = document.getElementById('name');
+
+    submitBtn.addEventListener('click', () => {
+      const name = nameInput.value || "Anonymous";
+      const confession = confessionInput.value;
+
+      if (confession) {
+        db.ref('confessions').push({
+          name: name,
+          confession: confession,
+        }).then(() => {
+          alert('Your confession was submitted!');
+          confessionInput.value = '';
+          nameInput.value = '';
+        }).catch((error) => {
+          alert('Error submitting your confession: ' + error.message);
+        });
+      } else {
+        alert('Please write a confession.');
+      }
+    });
+  </script>
+</body>
+</html>
